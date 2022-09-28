@@ -1,18 +1,35 @@
 <script setup lang="ts">
-const tweets = [{ id: '0', description: 'Hello World'}, { id: '1', description: 'This is a pen'}]
+import { ref } from 'vue'
+
+const tweets = ref( [{ id: 0, description: 'Hello World'}, { id: 1, description: 'This is a pen'}])
+
+const inputtingDescription = ref<string>()
+const postTweet = () => {
+    const tweet  = { id: Math.random(), description: inputtingDescription.value}
+    tweets.value.push(tweet)
+    inputtingDescription.value = ''
+    console.log((inputtingDescription.value))
+}
+
+const deleteTweet = (id: number) => {
+    tweets.value = tweets.value.filter(t => t.id !== id )
+}
+
 </script>
 
 <template>
     <div class="container">
         <h1>Tweeter</h1>
         <div class="form-container">
-            <input type="text" />
-            <button class="save-button">post</button>
+            <input v-model="inputtingDescription" type="text" />
+            <button class="save-button" @click="postTweet()">post</button>
         </div>
         <div class="tweet-container">
+            <p v-if="tweets.length <= 0">No tweets have been added</p>
             <ul>
                 <li v-for="tweet in tweets" class="tweet-list" :key="tweet.id">
                     <span>{{tweet.description}}</span>
+                    <button @click="deleteTweet(tweet.id)" class="delete-button">delete</button>
                 </li>
                 
             </ul>
@@ -40,12 +57,30 @@ const tweets = [{ id: '0', description: 'Hello World'}, { id: '1', description: 
 
 .tweet-list {
     list-style: none;
+    margin-bottom: 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(204, 219, 233);
+    padding: 8px 20px;
+    width: 300px;
 }
 
-button {
+.save-button {
     color: #fff;
     font-weight: bold;
     background-color: #68c9c9;
+    border-radius: 2px;
+    border: none;
+    width: 60px;
+    height: 22px;
+}
+
+.delete-button {
+    color: #fff;
+    font-weight: bold;
+    background-color: #dc9421;
     border-radius: 2px;
     border: none;
     width: 60px;
